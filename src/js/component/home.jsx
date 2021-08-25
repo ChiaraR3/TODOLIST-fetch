@@ -32,7 +32,7 @@ const Home = () => {
 		let responseJson = await response.json()
 		console.log(responseJson)
 	}
-	async function putTodo (){
+	async function upDateTodo (){
 		const response = await fetch(
 			"https://assets.breatheco.de/apis/fake/todos/user/ChiaraR3",
 			{ 
