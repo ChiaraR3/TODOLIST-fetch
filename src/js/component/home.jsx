@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 //create your first component
 const Home = () => {
-	const [tasks, setTasks] = useState([]);
+	const [tasks, setTasks] = useState([{ label: "uno", done: false }]);
 	const [newTask, setNewTask] = useState("");
 	const [taskExists, setTaskExists] = useState(false);
 
@@ -26,9 +26,15 @@ const Home = () => {
 				}
 			}
 		);
+
 		let responseJson = response.json();
-		return await responseJson;
+		setNewTask(responseJson);
+		return setNewTask;
 	}
+
+	useEffect(() => {
+		getTodos();
+	}, []);
 
 	async function createTodos() {
 		let response = await fetch(
@@ -59,6 +65,10 @@ const Home = () => {
 		console.log(responseJson);
 	}
 
+	useEffect(() => {
+		updateTodos(tasks);
+	}, [tasks]);
+
 	async function deleteTodos() {
 		let response = await fetch(
 			"https://assets.breatheco.de/apis/fake/todos/user/ChiaraR3",
@@ -71,24 +81,29 @@ const Home = () => {
 		);
 		let responseJson = response.json();
 		console.log(responseJson);
+		createTodos();
+		setTasks([]);
 	}
+
 	async function newTaskChange(event) {
 		setNewTask(event.target.value);
 
 		await getTodos();
 	}
-	async function addNewOne(event) {
-		//if (event.key === "Enter") {
-		//	let position = tasks.findIndex(task => task === newTask);
-		//	if (position === -1) {
-		const newTodos = [...tasks, newTask];
 
-		//	} else {
+	async function addNewOne(event) {
+		if (event.key === "Enter") {
+			let position = tasks.findIndex(task => task.label === newTask);
+			if (position === -1) {
+				setTasks([...tasks, { label: newTask, done: false }]);
+				setNewTask("");
+			}
+		}
+		// else {
 		//		setTaskExists(true)}
-		await updateTodos(newTodos);
-		let serverToDos = await getTodos();
+		//updateTodos();
+		let serverToDos = getTodos();
 		setTasks(serverToDos);
-		setNewTask([{ label: " ", done: false }]);
 	}
 	async function deleteTask(indexToRemove) {
 		setTasks(tasks.filter((task, index) => index !== indexToRemove));
@@ -106,16 +121,17 @@ const Home = () => {
 				placeholder="New Task"
 				onChange={newTaskChange}
 				onKeyDown={addNewOne}
-				value={newTask}
+				value={newTask.label}
 			/>
 			<ul className="tasks">
 				{tasks.map((task, index) => (
 					<li
 						key={index}
 						className={
-							"list " + (task === newTask ? "warningToo" : " ")
+							"list " +
+							(task.label === newTask ? "warningToo" : " ")
 						}>
-						<span>{task}</span>
+						<span>{task.label}</span>
 						<button
 							className="delete"
 							onClick={() => {
