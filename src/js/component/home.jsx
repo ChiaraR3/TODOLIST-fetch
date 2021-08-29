@@ -4,70 +4,9 @@ import React, { useEffect, useState } from "react";
 
 //create your first component
 const Home = () => {
-	const [tasks, setTasks] = useState(["Task", "Task 2"]);
+	const [tasks, setTasks] = useState([]);
 	const [newTask, setNewTask] = useState("");
 	const [taskExists, setTaskExists] = useState(false);
-
-	async function CreateTodos() {
-		const response = await fetch(
-			"https://assets.breatheco.de/apis/fake/todos/user/ChiaraR3",
-			{
-				headers: {
-					"Content-Type": "application/json"
-				},
-				method: "POST",
-				body: JSON.stringify([])
-			}
-		);
-		//let responseJson = await response.json();
-	}
-    async function getToDo(){
-		const response = await fetch(
-			"https://assets.breatheco.de/apis/fake/todos/user/ChiaraR3",
-			{
-				headers: {
-					"Content-Type": "application/json"
-				}
-			}) 
-		let responseJson = await response.json()
-		console.log(responseJson)
-	}
-	async function upDateTodo (){
-		const response = await fetch(
-			"https://assets.breatheco.de/apis/fake/todos/user/ChiaraR3",
-			{ 
-			method: "PUT",
-			body: JSON.stringify(todos),
-			headers: {
-			  "Content-Type": "application/json"
-			}
-		  })
-		  .then(resp => {
-			  console.log(resp.ok); // will be true if the response is successfull
-			  console.log(resp.status); // the status code = 200 or code = 400 etc.
-			  console.log(resp.text()); // will try return the exact result as string
-			  return resp.json(); // (returns promise) will try to parse the result as json as return a promise that you can .then for results
-		  })
-		  .then(data => {
-			  //here is were your code should start after the fetch finishes
-			  console.log(data); //this will print on the console the exact object received from the server
-		  })
-		  .catch(error => {
-			  //error handling
-			  console.log(error);
-		  });
-	}
-
-	function newTaskChange(event) {
-		setNewTask(event.target.value);
-	}
-
-	function addNewOne(event) {
-		if (event.key === "Enter") {
-			setTasks([...tasks, newTask]);
-			setNewTask("");
-		}
-	}
 
 	useEffect(() => {
 		let position = tasks.findIndex(task => task === newTask);
@@ -78,21 +17,91 @@ const Home = () => {
 		}
 	}, [newTask]);
 
-	function validateInput(event) {
-		let positiondos = tasks.findIndex(task => newTask === " ");
-		if (positiondos === "") {
-			alert("The to do cannot be empty");
-		}
+	async function getTodos() {
+		let response = await fetch(
+			"https://assets.breatheco.de/apis/fake/todos/user/ChiaraR3",
+			{
+				headers: {
+					"Content-Type": "application/json"
+				}
+			}
+		);
+		let responseJson = response.json();
+		return await responseJson;
 	}
 
-	function deleteTask(indexToRemove) {
+	async function createTodos() {
+		let response = await fetch(
+			"https://assets.breatheco.de/apis/fake/todos/user/ChiaraR3",
+			{
+				headers: {
+					"Content-Type": "application/json"
+				},
+				method: "POST",
+				body: JSON.stringify([])
+			}
+		);
+		let responseJson = response.json();
+		console.log(responseJson);
+	}
+	async function updateTodos(tasks) {
+		let response = await fetch(
+			"https://assets.breatheco.de/apis/fake/todos/user/ChiaraR3",
+			{
+				headers: {
+					"Content-Type": "application/json"
+				},
+				method: "PUT",
+				body: JSON.stringify(tasks)
+			}
+		);
+		let responseJson = response.json();
+		console.log(responseJson);
+	}
+
+	async function deleteTodos() {
+		let response = await fetch(
+			"https://assets.breatheco.de/apis/fake/todos/user/ChiaraR3",
+			{
+				headers: {
+					"Content-Type": "application/json"
+				},
+				method: "DELETE"
+			}
+		);
+		let responseJson = response.json();
+		console.log(responseJson);
+	}
+	async function newTaskChange(event) {
+		setNewTask(event.target.value);
+
+		await getTodos();
+	}
+	async function addNewOne(event) {
+		//if (event.key === "Enter") {
+		//	let position = tasks.findIndex(task => task === newTask);
+		//	if (position === -1) {
+		const newTodos = [...tasks, newTask];
+
+		//	} else {
+		//		setTaskExists(true)}
+		await updateTodos(newTodos);
+		let serverToDos = await getTodos();
+		setTasks(serverToDos);
+		setNewTask([{ label: " ", done: false }]);
+	}
+	async function deleteTask(indexToRemove) {
 		setTasks(tasks.filter((task, index) => index !== indexToRemove));
 	}
-
 	return (
 		<div className="text-center container">
-			TO DO LIST
+			<h1>TO DO LIST</h1>
+			<button onClick={getTodos}>Get</button>
+			<button onClick={createTodos}>Create</button>
+			<button onClick={() => updateTodos([])}>Upgrade</button>
+			<button onClick={deleteTodos}>Delete</button>
 			<input
+				className={taskExists ? "warning" : " "}
 				type="text"
 				placeholder="New Task"
 				onChange={newTaskChange}
@@ -101,7 +110,11 @@ const Home = () => {
 			/>
 			<ul className="tasks">
 				{tasks.map((task, index) => (
-					<li className="list" key={index}>
+					<li
+						key={index}
+						className={
+							"list " + (task === newTask ? "warningToo" : " ")
+						}>
 						<span>{task}</span>
 						<button
 							className="delete"
