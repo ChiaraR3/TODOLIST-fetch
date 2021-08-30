@@ -4,12 +4,15 @@ import React, { useEffect, useState } from "react";
 
 //create your first component
 const Home = () => {
-	const [tasks, setTasks] = useState([{ label: "uno", done: false }]);
+	const [tasks, setTasks] = useState([{ label: "dormir", done: false }]);
 	const [newTask, setNewTask] = useState("");
 	const [taskExists, setTaskExists] = useState(false);
 
 	useEffect(() => {
-		let position = tasks.findIndex(task => task === newTask);
+		let position = tasks.findIndex(task => {
+			return task.label === newTask;
+		});
+
 		if (position === -1) {
 			setTaskExists(false);
 		} else {
@@ -98,12 +101,7 @@ const Home = () => {
 				setTasks([...tasks, { label: newTask, done: false }]);
 				setNewTask("");
 			}
-		} else {
-			setTaskExists(true);
 		}
-		//updateTodos();
-		//let serverToDos = await getTodos();
-		//setTasks();
 	}
 	function deleteTask(indexToRemove) {
 		setTasks(tasks.filter((task, index) => index !== indexToRemove));
@@ -116,12 +114,12 @@ const Home = () => {
 			<button onClick={() => updateTodos([])}>Upgrade</button>
 			<button onClick={deleteTodos}>Delete</button>
 			<input
-				className={taskExists ? "warning" : " "}
+				className={taskExists ? "warning" : ""}
 				type="text"
 				placeholder="New Task"
 				onChange={newTaskChange}
 				onKeyDown={addNewOne}
-				value={newTask.label}
+				value={newTask}
 			/>
 			<ul className="tasks">
 				{tasks.map((task, index) => (
@@ -129,7 +127,7 @@ const Home = () => {
 						key={index}
 						className={
 							"list " +
-							(task.label === newTask ? "warningToo" : " ")
+							(task.label === newTask ? "warningToo" : "")
 						}>
 						<span>{task.label}</span>
 						<button
