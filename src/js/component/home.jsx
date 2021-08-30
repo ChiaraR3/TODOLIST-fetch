@@ -27,9 +27,9 @@ const Home = () => {
 			}
 		);
 
-		let responseJson = response.json();
-		setNewTask(responseJson);
-		return setNewTask;
+		let responseJson = await response.json();
+		let tasks = responseJson;
+		return tasks;
 	}
 
 	useEffect(() => {
@@ -91,21 +91,21 @@ const Home = () => {
 		await getTodos();
 	}
 
-	async function addNewOne(event) {
+	function addNewOne(event) {
 		if (event.key === "Enter") {
 			let position = tasks.findIndex(task => task.label === newTask);
 			if (position === -1) {
 				setTasks([...tasks, { label: newTask, done: false }]);
 				setNewTask("");
 			}
+		} else {
+			setTaskExists(true);
 		}
-		// else {
-		//		setTaskExists(true)}
 		//updateTodos();
-		let serverToDos = getTodos();
-		setTasks(serverToDos);
+		//let serverToDos = await getTodos();
+		//setTasks();
 	}
-	async function deleteTask(indexToRemove) {
+	function deleteTask(indexToRemove) {
 		setTasks(tasks.filter((task, index) => index !== indexToRemove));
 	}
 	return (
