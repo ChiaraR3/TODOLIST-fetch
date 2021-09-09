@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import TaskList from "./TaskList.jsx";
 
 //include images into your bundle
 
@@ -123,21 +124,12 @@ const Home = () => {
 			/>
 			<ul className="tasks">
 				{tasks.map((task, index) => (
-					<li
+					<TaskList
 						key={index}
-						className={
-							"list " +
-							(task.label === newTask ? "warningToo" : "")
-						}>
-						<span>{task.label}</span>
-						<button
-							className="delete"
-							onClick={() => {
-								deleteTask(index);
-							}}>
-							x
-						</button>
-					</li>
+						task={task.label}
+						index={index}
+						deleteTask={deleteTask}
+					/>
 				))}
 			</ul>
 		</div>
