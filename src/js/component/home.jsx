@@ -52,7 +52,7 @@ const Home = () => {
 			}
 		);
 		let responseJson = response.json();
-		console.log(responseJson);
+		console.log(responseJson + "???");
 	}
 	async function updateTodos(tasks) {
 		let response = await fetch(
@@ -66,7 +66,7 @@ const Home = () => {
 			}
 		);
 		let responseJson = response.json();
-		console.log(responseJson);
+		console.log(responseJson + "!!!!");
 	}
 
 	useEffect(() => {
@@ -84,7 +84,7 @@ const Home = () => {
 			}
 		);
 		let responseJson = response.json();
-		console.log(responseJson);
+		console.log(responseJson + "¿¿¿¿");
 		createTodos();
 		setTasks([]);
 	}
@@ -113,7 +113,7 @@ const Home = () => {
 			<button onClick={getTodos}>Get</button>
 			<button onClick={createTodos}>Create</button>
 			<button onClick={() => updateTodos([])}>Upgrade</button>
-			<button onClick={deleteTodos}>Delete</button>
+			<button onClick={deleteTodos}>Delete all</button>
 			<input
 				className={taskExists ? "warning" : ""}
 				type="text"
@@ -127,6 +127,7 @@ const Home = () => {
 					<TaskList
 						key={index}
 						task={task.label}
+						newTask={newTask}
 						index={index}
 						deleteTask={deleteTask}
 					/>
