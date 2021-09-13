@@ -127,7 +127,6 @@ const Home = () => {
 					<TaskList
 						key={index}
 						task={task.label}
-						newTask={newTask}
 						index={index}
 						deleteTask={deleteTask}
 					/>

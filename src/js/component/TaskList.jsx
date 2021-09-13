@@ -1,11 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const TaskList = ({ task, newTask, deleteTask, index }) => {
+const TaskList = ({ task, deleteTask, index }) => {
 	return (
-		<li
-			key={index}
-			className={"list" + task === newTask ? "warningToo" : ""}>
+		<li key={index} className={"list"}>
 			<span>{task} </span>
 			<button
 				className="delete"
@@ -19,7 +17,6 @@ const TaskList = ({ task, newTask, deleteTask, index }) => {
 };
 
 TaskList.propTypes = {
-	newTask: PropTypes.string,
 	task: PropTypes.string,
 	deleteTask: PropTypes.func,
 	index: PropTypes.number
